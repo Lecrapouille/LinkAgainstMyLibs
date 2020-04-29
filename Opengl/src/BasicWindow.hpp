@@ -18,8 +18,8 @@
 // along with OpenGLCppWrapper.  If not, see <http://www.gnu.org/licenses/>.
 //=====================================================================
 
-#ifndef EXAMPLE_00_BASIC_WINDOW_HPP
-#  define EXAMPLE_00_BASIC_WINDOW_HPP
+#ifndef BASIC_WINDOW_HPP
+#  define BASIC_WINDOW_HPP
 
 #  include <OpenGLCppWrapper/OpenGLCppWrapper.hpp>
 

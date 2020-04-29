@@ -1,13 +1,13 @@
 PROJECT = LinkMyLibraries
 TARGET = OpenGL
 DESCRIPTION = Link My OpenGL library
-BUILD_TYPE = debug
+BUILD_TYPE = release
 
 P=..
 M=$(P)/.makefile
 include $(M)/Makefile.header
 
-OBJS += main.o
+OBJS += BasicWindow.o main.o
 PKG_LIBS += openglcppwrapper
 VPATH += src
 INCLUDES += -Isrc

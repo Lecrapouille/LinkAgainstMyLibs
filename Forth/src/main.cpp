@@ -20,7 +20,7 @@ int main()
 
     // Do a computation
     forth.interpreter.options.quiet = true; // FIXME
-    if (!forth.interpret(": FOO + + ; 2.4 FOO"))
+    if (!forth.interpretString(": FOO + + ; 2.4 FOO"))
       return -1;
 
     // Get the

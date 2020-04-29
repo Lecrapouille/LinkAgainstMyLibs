@@ -18,7 +18,7 @@
 // along with OpenGLCppWrapper.  If not, see <http://www.gnu.org/licenses/>.
 //=====================================================================
 
-#include "00_BasicWindow.hpp"
+#include "BasicWindow.hpp"
 #include <iostream>
 #include <stdlib.h>
 #include <limits.h>
