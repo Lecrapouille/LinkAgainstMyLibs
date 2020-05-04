@@ -1,5 +1,6 @@
 #include <MyLogger/Logger.hpp>
 #include <MyLogger/File.hpp>
+#include "config.hpp"
 
 int main()
 {
