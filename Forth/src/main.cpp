@@ -1,5 +1,4 @@
 #include <SimForth/SimForth.hpp> // Forth interpreter
-#include "Config.hpp"            // FIXME: Necessary for ../.makefile
 
 //------------------------------------------------------------------------------
 // This file shows a basic example of using a Forth interpreter embedded in your
