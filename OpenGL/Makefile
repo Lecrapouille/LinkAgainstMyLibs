@@ -1,6 +1,6 @@
 PROJECT = LinkMyLibraries
 TARGET = OpenGL
-DESCRIPTION = Link My OpenGL library
+DESCRIPTION = Link My OpenGL Library
 BUILD_TYPE = release
 
 P=..
