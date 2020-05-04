@@ -23,3 +23,11 @@ cd OpenGL
 make -j8
 ./build/OpenGL
 ```
+
+## liblogger
+
+```sh
+cd Logger
+make -j8
+./build/Logger
+```
