@@ -9,15 +9,13 @@
 //------------------------------------------------------------------------------
 void info(forth::Cell const& tos)
 {
-    switch (tos.tag)
+    if (tos.isInteger())
     {
-        case forth::Cell::INT:
-            std::cout << "Result is an integer: " << tos.i << std::endl;
-            break;
-        case forth::Cell::FLOAT:
-            std::cout << "Result is an double: " << tos.f << std::endl;
-            break;
-        default: break;
+        std::cout << "Result is an integer: " << tos.integer() << std::endl;
+    }
+    else
+    {
+        std::cout << "Result is a real: " << tos.real() << std::endl;
     }
 }
 
@@ -37,8 +35,8 @@ int main()
     forth::DataStack& DS = forth.dataStack();
 
     // Push some input parameters
-    DS.push(2);   // int    // alternative: DPUSH(2) iff variable DS is defined
-    DS.push(2.5); // float  // alternative: DPUSH(2.5) iff variable DS is defined
+    DS.push(forth::Cell::integer(2)); // int    // alternative: DPUSH(2) iff variable DS is defined
+    DS.push(forth::Cell::real(2.5));  // float  // alternative: DPUSH(2.5) iff variable DS is defined
 
     // Show data content in hexadecimal
     std::cout << "Inputs: ";
@@ -46,7 +44,7 @@ int main()
     DS.display(std::cout, base);
 
     // Interpret a script:
-    std::string script(".\" Hello Forth\" : FOO f+ f+ ; 2.4 FOO DUP DUP >INT");
+    std::string script(".\" Hello Forth\" : FOO + + ; 2.4 FOO DUP DUP >INT");
     std::cout << "Interprete the script: " << script << std::endl;
     if (!forth.interpretString(script.c_str()))
       return -1;
