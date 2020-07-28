@@ -1,5 +1,5 @@
 #include <SimForth/SimForth.hpp> // Forth interpreter
-#include "config.hpp"
+#include "project_info.hpp"
 
 //------------------------------------------------------------------------------
 // This file shows a basic example of using a Forth interpreter embedded in your

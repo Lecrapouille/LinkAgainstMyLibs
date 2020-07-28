@@ -1,9 +1,10 @@
 #include <MyLogger/Logger.hpp>
 #include <MyLogger/File.hpp>
-#include "config.hpp"
+#include "project_info.hpp"
 
 int main()
 {
+    CONFIG_LOG(project::info);
     LOGI("An information %s", "the info");
     LOGD("A debug %s", "the debug");
     LOGW("A warning %s", "the warning");
