@@ -22,7 +22,7 @@ void info(forth::Cell const& tos)
 //------------------------------------------------------------------------------
 int main()
 {
-    forth::Forth forth;
+    SimForth forth;
     forth.options().quiet = true; // FIXME
 
     // Boot a minimal Forth system (else the Forth dictionary is totaly empty).
