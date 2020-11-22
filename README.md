@@ -12,10 +12,18 @@ git clone git@github.com:Lecrapouille/LinkAgainstMyLibs.git --recurse-submodules
 
 https://github.com/Lecrapouille/SimForth
 
+Classic Forth interpreter:
 ```sh
 cd Forth
 make -j8
 ./build/Forth
+```
+
+Extended Forth interpreter:
+```sh
+cd ExtendedForth
+make -j8
+./build/ExtendedForth
 ```
 
 ## libOpenGLCppWrapper
