@@ -21,7 +21,8 @@
 #include "BasicWindow.hpp"
 #include <iostream>
 
-BasicWindow::BasicWindow()
+BasicWindow::BasicWindow(uint32_t const width, uint32_t const height, const char *title)
+  : GLWindow(width, height, title)
 {
   std::cout << "Hello BasicWindow" << std::endl;
 }
@@ -34,7 +35,7 @@ BasicWindow::~BasicWindow()
 //------------------------------------------------------------------------------
 //! \brief Add your C++/OpenGL code here for initializing your scene.
 //------------------------------------------------------------------------------
-bool BasicWindow::setup()
+bool BasicWindow::onSetup()
 {
   // Two cases:
   // - setup ends with success => return true. In this case the function draw()
@@ -49,7 +50,7 @@ bool BasicWindow::setup()
 //! \brief Callback for painting our scene. Note that swap buffer are called
 //! automaticaly.
 //------------------------------------------------------------------------------
-bool BasicWindow::draw()
+bool BasicWindow::onPaint()
 {
   // Note: wrap each OpenGL function with the glCheck() to check everything is
   // alright.
@@ -71,19 +72,19 @@ bool BasicWindow::draw()
 }
 
 //------------------------------------------------------------------------------
-//! \brief Callback when setup() failed.
+//! \brief Callback when onSetup() failed.
 //------------------------------------------------------------------------------
-void BasicWindow::onSetupFailed()
+void BasicWindow::onSetupFailed(std::string const& reason)
 {
-  // To reach this code make setup() return false;
-  std::cerr << "onSetupFailed() called" << std::endl;
+  // To reach this code make onSetup() return false or throw an GL::Exception.
+  std::cerr << "Failure during the setup. Reason: " << reason << std::endl;
 }
 
 //------------------------------------------------------------------------------
-//! \brief Callback when draw() failed.
+//! \brief Callback when onPaint() failed.
 //------------------------------------------------------------------------------
-void BasicWindow::onDrawFailed()
+void BasicWindow::onPaintFailed(std::string const& reason)
 {
-  // To reach this code make draw() return false;
-  std::cerr << "onDrawFailed() called" << std::endl;
+  // To reach this code make onPaint() return false or throw an GL::Exception.
+  std::cerr << "Failure during rendering. Reason: " << reason << std::endl;
 }

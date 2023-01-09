@@ -23,19 +23,22 @@
 #include <stdlib.h>
 #include <limits.h>
 
+#define WIDTH 800
+#define HEIGHT 600
+
 //------------------------------------------------------------------------------
 int main()
 {
-  std::unique_ptr<IGLWindow> win;
+  std::unique_ptr<GLWindow> win;
   try
     {
-      win = std::make_unique<BasicWindow>();
-      return win->start() ? EXIT_SUCCESS : EXIT_FAILURE;
+      win = std::make_unique<BasicWindow>(WIDTH, HEIGHT, "Hello OpenGLCppWrapper");
+      return win->run() ? EXIT_SUCCESS : EXIT_FAILURE;
     }
-  catch (const OpenGLException& e)
+  catch (const GL::Exception& e)
     {
       // Caught OpenGLException from constructors
-      ERROR("Caught exception: '%s'", e.message().c_str());
+      std::cerr << "Caught exception from constructors: " << e.message() << std::endl;
       return EXIT_FAILURE;
     }
 }

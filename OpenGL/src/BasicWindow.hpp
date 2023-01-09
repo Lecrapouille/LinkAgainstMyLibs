@@ -23,28 +23,25 @@
 
 #  include <OpenGLCppWrapper/OpenGLCppWrapper.hpp>
 
-using namespace glwrap;
-using namespace glwrap::window;
-
 //------------------------------------------------------------------------------
 //! \brief This example shows how to create a window instanciating an OpenGL
 //! context. No OpenGL stuffs are rendered here for the moment. The basic OpenGL
 //! routine called here is just to clear the window. No input/ouput events (IO)
 //! are observed for the moment.
 //------------------------------------------------------------------------------
-class BasicWindow: public IGLWindow
+class BasicWindow: public GLWindow
 {
 public:
 
-  BasicWindow();
+  BasicWindow(uint32_t const width, uint32_t const height, const char *title);
   ~BasicWindow();
 
 private:
 
-  virtual bool setup() override;
-  virtual bool draw() override;
-  virtual void onSetupFailed() override;
-  virtual void onDrawFailed() override;
+  virtual bool onSetup() override;
+  virtual bool onPaint() override;
+  virtual void onSetupFailed(std::string const& reason) override;
+  virtual void onPaintFailed(std::string const& reason) override;
 };
 
 #endif // EXAMPLE_00_BASIC_WINDOW_HPP

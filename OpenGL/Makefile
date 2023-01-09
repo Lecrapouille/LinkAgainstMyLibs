@@ -1,6 +1,7 @@
 PROJECT = LinkMyLibraries
 TARGET = OpenGL
 DESCRIPTION = Link My OpenGL Library
+STANDARD = --std=c++14
 BUILD_TYPE = release
 
 P=..
