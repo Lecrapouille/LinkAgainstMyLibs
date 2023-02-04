@@ -1,6 +1,6 @@
 # LinkAgainstMyLibs
 
-Link against my libraries (Forth, OpenGL, Logger ...) to check if standalone project using them can compile.
+Link against my libraries (Forth, OpenGL, Logger, SimCity ...) to check if standalone project using them can compile.
 
 ## Download
 
@@ -44,4 +44,14 @@ https://github.com/Lecrapouille/MyLogger
 cd Logger
 make -j8
 ./build/Logger
+```
+
+## libopenglassbox
+
+https://github.com/Lecrapouille/OpenGlassBox
+
+```sh
+cd OpenGlassBox
+make -j8
+./build/OpenGlassBox
 ```
