@@ -1,6 +1,6 @@
 # LinkAgainstMyLibs
 
-Link against my libraries (Forth, OpenGL, Logger, SimCity ...) to check if standalone project using them can compile.
+Link against my libraries (Forth, OpenGL, Logger, SimCity/GlassBox ...) to check if standalone project using them can compile.
 
 ## Download
 
@@ -54,4 +54,14 @@ https://github.com/Lecrapouille/OpenGlassBox
 cd OpenGlassBox
 make -j8
 ./build/OpenGlassBox
+```
+
+## libtimedpetrineteditor
+
+https://github.com/Lecrapouille/TimedPetriNetEditor
+
+```sh
+cd Logger
+make -j8
+./build/TimedPetriNetEditor
 ```
