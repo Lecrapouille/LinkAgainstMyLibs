@@ -61,7 +61,17 @@ make -j8
 https://github.com/Lecrapouille/TimedPetriNetEditor
 
 ```sh
-cd Logger
+cd TimedPetriNetEditor
 make -j8
 ./build/TimedPetriNetEditor
+```
+
+## libzipper
+
+https://github.com/Lecrapouille/zipper
+
+```sh
+cd Zipper
+make -j8
+./build/Zipper
 ```
