@@ -1,4 +1,6 @@
 #include <TimedPetriNetEditor/PetriNet.hpp>
+//#include <Editor/DearImGui/Editor.hpp> // FIXME poor header: shall be <TimedPetriNetEditor/Editor/DearImGui/Editor.hpp>
+// and calling "Application.hpp" which forec use to use -I
 #include <stdio.h>
 
 //------------------------------------------------------------------------------
@@ -15,6 +17,10 @@ int main()
     assert(net.places() == 1);
     assert(net.transitions() == 1);
     assert(net.arcs() == 1);
+
+    // FIXME: ahrd to compile
+    //tpne::Editor editor;
+    //editor.run("");
 
     return EXIT_SUCCESS;
 }
