@@ -8,7 +8,7 @@ M=$(P)/.makefile
 include $(M)/Makefile.header
 
 OBJS += main.o
-PKG_LIBS += timedpetrinetgui timedpetrinetcore
+PKG_LIBS += TimedPetriNet
 VPATH += src
 INCLUDES += -Isrc
 

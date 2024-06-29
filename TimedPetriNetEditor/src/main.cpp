@@ -18,6 +18,9 @@ int main()
     assert(net.transitions() == 1);
     assert(net.arcs() == 1);
 
+    std::cout << net.places()[0].key << std::endl;
+    std::cout << net.transitions()[0].key << std::endl;
+
     // FIXME: ahrd to compile
     //tpne::Editor editor;
     //editor.run("");
