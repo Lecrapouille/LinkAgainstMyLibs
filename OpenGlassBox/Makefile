@@ -8,7 +8,7 @@ M=$(P)/.makefile
 include $(M)/Makefile.header
 
 OBJS += main.o
-PKG_LIBS += openglassbox
+PKG_LIBS += OpenGlassBox
 VPATH += src
 INCLUDES += -Isrc
 
