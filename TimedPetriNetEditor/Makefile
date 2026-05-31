@@ -2,6 +2,7 @@ PROJECT = LinkMyLibraries
 TARGET = TimedPetriNetEditor
 DESCRIPTION = Link TimedPetriNetEditor Library
 BUILD_TYPE = release
+STANDARD = --std=c++17
 
 P=..
 M=$(P)/.makefile
