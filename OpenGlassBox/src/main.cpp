@@ -1,58 +1,123 @@
-#include <OpenGlassBox/Simulation.hpp>
-#include <stdio.h>
+#include <OpenGlassBox/OpenGlassBox.hpp>
 
-//------------------------------------------------------------------------------
+#include <cstdlib>
+#include <iostream>
+
+namespace
+{
+
+char const* const kScript = R"ogs(
+resources
+	resource Water
+	resource Grass
+	resource People
+end
+
+paths
+	path Road color 0xAAAAAA
+end
+
+segments
+	segment Dirt color 0xAAAAAA
+end
+
+agents
+	agent People color 0xFFFF00 speed 10
+	agent Worker color 0xFFFFFF speed 10
+end
+
+rules
+
+	mapRule CreateGrass
+		rate 7 ticks
+		map Water remove 10 randomTilesPercent 90
+		map Grass add 1
+	end
+
+	unitRule SendPeopleToWork
+		rate 20 ticks
+		local People remove 1
+		agent People to Work add [ People 1 ]
+	end
+
+	unitRule SendPeopleToHome
+		rate 100 ticks
+		map Water greater 70
+		local People remove 1
+		agent Worker to Home add [ People 1 ]
+	end
+end
+
+units
+	unit Home color 0xFF00FF mapRadius 1 rules [ SendPeopleToWork ] targets [ Home ] caps [ People 4 ] resources [ People 4 ]
+	unit Work color 0x00AAFF mapRadius 3 rules [ SendPeopleToHome ] targets [ Work ] caps [ People 2 ] resources [ ]
+end
+
+maps
+	map Water color 0x0000FF capacity 100 rules [  ]
+	map Grass color 0x00FF00 capacity 10 rules [ CreateGrass ]
+end
+)ogs";
+
+} // namespace
+
 int main()
 {
-    Simulation simulation(12u, 12u);
+    const uint32_t grid_size = 64u;
 
-    if (!simulation.parse("TestCity.txt"))
-        return EXIT_FAILURE;
+    // Create the simulation
+    ogb::Simulation simulation(grid_size, grid_size);
 
-    // --- Paris city
-    City& paris = simulation.addCity("Paris", Vector3f(400.0f, 200.0f, 0.0f));
-    Path& road = paris.addPath(simulation.getPathType("Road"));
-    Node& n1 = road.addNode(Vector3f(60.0f, 60.0f, 0.0f) + paris.position());
-    Node& n2 = road.addNode(Vector3f(300.0f, 300.0f, 0.0f) + paris.position());
-    Node& n3 = road.addNode(Vector3f(60.0f, 300.0f, 0.0f) + paris.position());
-    Way& w1 = road.addWay(simulation.getWayType("Dirt"), n1, n2);
-    Way& w2 = road.addWay(simulation.getWayType("Dirt"), n2, n3);
-    Way& w3 = road.addWay(simulation.getWayType("Dirt"), n3, n1);
-    Unit& u1 = paris.addUnit(simulation.getUnitType("Home"), road, w1, 0.66f);
-    Unit& u2 = paris.addUnit(simulation.getUnitType("Home"), road, w1, 0.5f);
-    Unit& u3 = paris.addUnit(simulation.getUnitType("Work"), road, w2, 0.5f);
-    Unit& u4 = paris.addUnit(simulation.getUnitType("Work"), road, w3, 0.5f);
-    Map& m1 = paris.addMap(simulation.getMapType("Grass"));
-    Map& m2 = paris.addMap(simulation.getMapType("Water"));
-
-    // --- Versailles city
-    City& versailles = simulation.addCity("Versailles", Vector3f(0.0f, 30.0f, 0.0f));
-    versailles.addMap(simulation.getMapType("Grass"));
-    versailles.addMap(simulation.getMapType("Water"));
-    Path& road2 = versailles.addPath(simulation.getPathType("Road"));
-    Node& n4 = road2.addNode(Vector3f(40.0f, 20.0f, 0.0f) + versailles.position());
-    Node& n5 = road2.addNode(Vector3f(200.0f, 200.0f, 0.0f) + versailles.position());
-    Way& w4 = road2.addWay(simulation.getWayType("Dirt"), n4, n5);
-    Way& w5 = road2.addWay(simulation.getWayType("Dirt"), n5, n1);
-    Unit& u5 = versailles.addUnit(simulation.getUnitType("Work"), road2, w4, 0.9f);
-
-    // Do X simulation steps. Place this code in your runtime game loop
-    float delta_time = 0.1f; // as seconds
-    simulation.update(delta_time);
-    simulation.update(delta_time);
-    simulation.update(delta_time);
-
-    // Debug Paris Agents. Not debuged here: Units, Maps, Paths
-    for (auto const& agent: paris.agents())
+    // Parse the script. Alternatively, you can load a script from a file.
+    if (!simulation.script().parseString(kScript))
     {
-        printf("Agent %u (%s):\n", agent->id(), agent->type().c_str());
-        printf("  Position %.3f, %.3f\n", agent->position().x, agent->position().y);
-        printf("  Has %zu Resources:\n", agent->resources().size());
-        for (auto const& r: agent->resources())
-        {
-            printf("    %s: %u / %u\n", r.type().c_str(), r.getAmount(), r.getCapacity());
-        }
+        std::cout << "Error parsing script: "
+                  << simulation.script().formatErrors()
+                  << std::endl;
+        return EXIT_FAILURE;
     }
+
+    // Add a city to the simulation
+    ogb::City& city = simulation.addCity("MyCity", ogb::Vector3f(0.f, 0.f, 0.f));
+
+    // Install the Dijkstra router needed for agent routing
+    ogb::installDijkstraRouter(city, simulation.config());
+
+    // Add the maps to the city. Water and Grass are the only maps used in this example.
+    city.addMap(simulation.script().getMapType("Water"));
+    city.addMap(simulation.script().getMapType("Grass"));
+
+    // Define "dirty road" as the way type for road segments
+    ogb::Path& road = city.addPath(simulation.script().getPathType("Road"));
+    ogb::WayType const& dirt = simulation.script().getWayType("Dirt");
+
+    // Add the nodes as road junctions: define a triangle shape
+    ogb::Node& a = road.addNode(ogb::Vector3f(0.f, 0.f, 0.f));
+    ogb::Node& b = road.addNode(ogb::Vector3f(60.f, 0.f, 0.f));
+    ogb::Node& c = road.addNode(ogb::Vector3f(30.f, 52.f, 0.f));
+
+    // Add the dirty ways as road segments
+    road.addWay(dirt, a, b);
+    road.addWay(dirt, b, c);
+    road.addWay(dirt, c, a);
+
+    // Add the buildings to the city
+    city.addUnit(simulation.script().getUnitType("Home"), a);
+    city.addUnit(simulation.script().getUnitType("Work"), b);
+
+    // Set the simulation time to 8:00 AM and the total ticks to the number of ticks in a day
+    simulation.clock().setTimeOfDay(0u, 8u, 0u);
+    simulation.setTotalTicks(simulation.clock().ticks());
+
+    // Run the simulation for 200 ticks
+    for (uint32_t tick = 0u; tick < 200u; ++tick)
+    {
+        simulation.update(simulation.config().tickDuration());
+    }
+
+    // Print the number of units and agents in the city
+    std::cout << city.units().size() << " units, "
+              << city.agents().size() << " agents\n";
 
     return EXIT_SUCCESS;
 }
