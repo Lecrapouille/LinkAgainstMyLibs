@@ -1,18 +1,18 @@
-PROJECT = LinkMyLibraries
-TARGET = TimedPetriNetEditor
-DESCRIPTION = Link TimedPetriNetEditor Library
-BUILD_TYPE = release
-STANDARD = --std=c++17
-
 P=..
 M=$(P)/.makefile
-include $(M)/Makefile.header
 
-OBJS += main.o
+PROJECT_NAME := LinkMyLibraries
+PROJECT_VERSION := 1.0.0
+TARGET_NAME := TimedPetriNetEditor
+TARGET_DESCRIPTION := Link TimedPetriNetEditor Library
+COMPILATION_MODE := release
+CXX_STANDARD := --std=c++17
+
+include $(M)/project/Makefile
+
+SRC_FILES += src/main.cpp
 PKG_LIBS += TimedPetriNet
 VPATH += src
-INCLUDES += -Isrc
+INCLUDES += src
 
-all: $(TARGET)
-
-include $(M)/Makefile.footer
+include $(M)/rules/Makefile

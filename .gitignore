@@ -1,6 +1,41 @@
-*~
-*/build
-*/VERSION
-*/external/backward-cpp
-VERSION.txt
-Zipper/ziptest.zip
+# Project specific
+build/
+.cache/
+ci-artifacts/
+release/
+doc/code-coverage/*
+doc/doxygen/*
+external/*/
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app

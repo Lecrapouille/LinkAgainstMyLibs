@@ -1,20 +1,20 @@
-PROJECT = LinkMyLibraries
-TARGET = OpenGlassBox
-DESCRIPTION = Link OpenGlassBox Library
-BUILD_TYPE = release
-
 P=..
 M=$(P)/.makefile
-include $(M)/Makefile.header
 
-OBJS += main.o
+PROJECT_NAME := LinkMyLibraries
+PROJECT_VERSION := 1.0.0
+TARGET_NAME := OpenGlassBox
+TARGET_DESCRIPTION := Link OpenGlassBox Library
+COMPILATION_MODE := release
+
+include $(M)/project/Makefile
+
+SRC_FILES += src/main.cpp
 PKG_LIBS += --static OpenGlassBox
 VPATH += src
-INCLUDES += -Isrc
+INCLUDES += src
 
 DEFINES += -Wno-unused-variable
 DEFINES += -DVIRTUAL=
 
-all: $(TARGET)
-
-include $(M)/Makefile.footer
+include $(M)/rules/Makefile
