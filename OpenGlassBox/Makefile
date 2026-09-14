@@ -9,6 +9,9 @@ COMPILATION_MODE := release
 
 include $(M)/project/Makefile
 
+# The public headers use std::optional.
+CXX_STANDARD := --std=c++17
+
 SRC_FILES += src/main.cpp
 PKG_LIBS += --static OpenGlassBox
 VPATH += src

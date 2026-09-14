@@ -1,11 +1,18 @@
-#include <OpenGlassBox/OpenGlassBox.hpp>
+// A whole game in one file: load a ruleset, found a city, lay a triangle of
+// roads with a house and a factory on it, and let the morning commute run.
+//
+// This example only sees the installed headers, so it doubles as a check that
+// the public API is enough on its own.
 
+#include <OpenGlassBox/OpenGlassBox.hpp>
 #include <cstdlib>
 #include <iostream>
 
-namespace
-{
+namespace {
 
+// The gameplay: nothing below is hard-coded in the engine. Resources, roads,
+// buildings and rules are all declared here, and the engine only knows the
+// names this script gives them.
 char const* const kScript = R"ogs(
 resources
 	resource Water
@@ -28,96 +35,117 @@ end
 
 rules
 
-	mapRule CreateGrass
+	layerRule CreateGrass
 		rate 7 ticks
-		map Water remove 10 randomTilesPercent 90
-		map Grass add 1
+		layer Water remove 10 randomTilesPercent 90
+		layer Grass add 1
 	end
 
-	unitRule SendPeopleToWork
+	buildingRule SendPeopleToWork
 		rate 20 ticks
 		local People remove 1
 		agent People to Work add [ People 1 ]
 	end
 
-	unitRule SendPeopleToHome
+	buildingRule SendPeopleToHome
 		rate 100 ticks
-		map Water greater 70
+		layer Water greater 70
 		local People remove 1
 		agent Worker to Home add [ People 1 ]
 	end
 end
 
-units
-	unit Home color 0xFF00FF mapRadius 1 rules [ SendPeopleToWork ] targets [ Home ] caps [ People 4 ] resources [ People 4 ]
-	unit Work color 0x00AAFF mapRadius 3 rules [ SendPeopleToHome ] targets [ Work ] caps [ People 2 ] resources [ ]
+buildings
+	building Home color 0xFF00FF layerRadius 1 rules [ SendPeopleToWork ] targets [ Home ] caps [ People 4 ] resources [ People 4 ]
+	building Work color 0x00AAFF layerRadius 3 rules [ SendPeopleToHome ] targets [ Work ] caps [ People 2 ] resources [ ]
 end
 
-maps
-	map Water color 0x0000FF capacity 100 rules [  ]
-	map Grass color 0x00FF00 capacity 10 rules [ CreateGrass ]
+layers
+	layer Water color 0x0000FF capacity 100 rules [  ]
+	layer Grass color 0x00FF00 capacity 10 rules [ CreateGrass ]
 end
 )ogs";
 
-} // namespace
+}  // namespace
 
-int main()
-{
-    const uint32_t grid_size = 64u;
+int main() {
+  // Runtime settings. Everything has a default, so only say what differs
+  // from it: here, how many cells wide a city is when no size is given.
+  ogb::Config config;
+  config.grid.defaultCitySizeU = 64u;
+  config.grid.defaultCitySizeV = 64u;
 
-    // Create the simulation
-    ogb::Simulation simulation(grid_size, grid_size);
+  // The whole game. This is the only object an application has to hold: the
+  // ruleset, the world, the cities and the clock all live inside it.
+  ogb::Simulation simulation(config);
 
-    // Parse the script. Alternatively, you can load a script from a file.
-    if (!simulation.script().parseString(kScript))
-    {
-        std::cout << "Error parsing script: "
-                  << simulation.script().formatErrors()
-                  << std::endl;
-        return EXIT_FAILURE;
-    }
+  // Load the gameplay before founding anything. A building keeps a reference
+  // to the recipe it was built from, and those recipes live in the ruleset,
+  // so the ruleset has to be in place first and outlive every city.
+  // loadScriptFile() reads a .ogs file instead.
+  if (!simulation.loadScriptString(kScript)) {
+    std::cerr << "Error parsing script: " << simulation.formatScriptErrors()
+              << std::endl;
+    return EXIT_FAILURE;
+  }
 
-    // Add a city to the simulation
-    ogb::City& city = simulation.addCity("MyCity", ogb::Vector3f(0.f, 0.f, 0.f));
+  // Found a city. The size comes from GridConfig above; the position is
+  // where its top-left cell sits in the world.
+  ogb::City& city = simulation.addCity("MyCity", ogb::Vector3f(0.f, 0.f, 0.f));
 
-    // Install the Dijkstra router needed for agent routing
-    ogb::installDijkstraRouter(city, simulation.config());
+  // Give the city a router before anything travels. An agent with no router
+  // never leaves the crossroads it was sent from, and nothing says so: the
+  // city simply looks asleep.
+  ogb::installDijkstraRouters(simulation);
 
-    // Add the maps to the city. Water and Grass are the only maps used in this example.
-    city.addMap(simulation.script().getMapType("Water"));
-    city.addMap(simulation.script().getMapType("Grass"));
+  // Ask for the layers of the environment the rules read and write. They are
+  // owned by the world and shared by every city, so this creates each one
+  // once whatever how many cities ask.
+  ogb::Ruleset const& rules = simulation.getRuleset();
+  city.addLayer(rules.getLayerType("Water"));
+  city.addLayer(rules.getLayerType("Grass"));
 
-    // Define "dirty road" as the way type for road segments
-    ogb::Path& road = city.addPath(simulation.script().getPathType("Road"));
-    ogb::WayType const& dirt = simulation.script().getWayType("Dirt");
+  // A network of roads, and the recipe its segments are built from. An agent
+  // never leaves the network it started on, so a city with a road network
+  // and a rail network has two of these.
+  ogb::Path& road = city.addPath(rules.getPathType("Road"));
+  ogb::SegmentType const& dirt = rules.getSegmentType("Dirt");
 
-    // Add the nodes as road junctions: define a triangle shape
-    ogb::Node& a = road.addNode(ogb::Vector3f(0.f, 0.f, 0.f));
-    ogb::Node& b = road.addNode(ogb::Vector3f(60.f, 0.f, 0.f));
-    ogb::Node& c = road.addNode(ogb::Vector3f(30.f, 52.f, 0.f));
+  // Three crossroads, in world coordinates.
+  ogb::Node& a = road.addNode(ogb::Vector3f(0.f, 0.f, 0.f));
+  ogb::Node& b = road.addNode(ogb::Vector3f(60.f, 0.f, 0.f));
+  ogb::Node& c = road.addNode(ogb::Vector3f(30.f, 52.f, 0.f));
 
-    // Add the dirty ways as road segments
-    road.addWay(dirt, a, b);
-    road.addWay(dirt, b, c);
-    road.addWay(dirt, c, a);
+  // The streets joining them. Segments are undirected: one-way traffic is
+  // not modelled.
+  road.addSegment(dirt, a, b);
+  road.addSegment(dirt, b, c);
+  road.addSegment(dirt, c, a);
 
-    // Add the buildings to the city
-    city.addUnit(simulation.script().getUnitType("Home"), a);
-    city.addUnit(simulation.script().getUnitType("Work"), b);
+  // Two buildings, each standing on a crossroads so that agents can reach
+  // them. A building may also stand along a street, at an offset.
+  city.addBuilding(rules.getBuildingType("Home"), a);
+  city.addBuilding(rules.getBuildingType("Work"), b);
 
-    // Set the simulation time to 8:00 AM and the total ticks to the number of ticks in a day
-    simulation.clock().setTimeOfDay(0u, 8u, 0u);
-    simulation.setTotalTicks(simulation.clock().ticks());
+  // Open the working day. Rules may be written as "hour between 8 18", so
+  // starting at midnight would mean watching a city where nothing is awake.
+  simulation.setTimeOfDay(0u, 8u, 0u);
 
-    // Run the simulation for 200 ticks
-    for (uint32_t tick = 0u; tick < 200u; ++tick)
-    {
-        simulation.update(simulation.config().tickDuration());
-    }
+  // A new simulation starts paused, so that a game can be built before
+  // anything moves.
+  simulation.setPaused(false);
 
-    // Print the number of units and agents in the city
-    std::cout << city.units().size() << " units, "
-              << city.agents().size() << " agents\n";
+  // The game loop. update() is handed seconds of wall time, not ticks: it
+  // scales them, accumulates them and runs as many fixed ticks as fit. That
+  // is what makes the simulation advance at the same rate whatever the frame
+  // rate. Here there is no frame to wait for, so feed it exactly one tick at
+  // a time.
+  for (uint32_t tick = 0u; tick < 200u; ++tick) {
+    simulation.update(simulation.getConfig().time.tickDuration());
+  }
 
-    return EXIT_SUCCESS;
+  std::cout << city.getBuildings().size() << " buildings, "
+            << city.getAgents().size() << " agents\n";
+
+  return EXIT_SUCCESS;
 }

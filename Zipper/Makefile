@@ -6,6 +6,7 @@ PROJECT_VERSION := 1.0.0
 TARGET_NAME := Zipper
 TARGET_DESCRIPTION := Link Zipper Library
 COMPILATION_MODE := release
+CXX_STANDARD := --std=c++20
 
 include $(M)/project/Makefile
 

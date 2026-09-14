@@ -26,7 +26,7 @@ rules
 		map Grass add 1
 	end
 
-	unitRule SendPeopleToWork
+	buildingRule SendPeopleToWork
 		rate 20
 
 		local People remove 1
@@ -34,7 +34,7 @@ rules
 		agent People to Work add [ People 1 ]
 	end
 
-	unitRule SendPeopleToHome
+	buildingRule SendPeopleToHome
 		rate 100
 
 		map Water greater 70
@@ -44,7 +44,7 @@ rules
 		agent Worker to Home add [ People 1 ]
 	end
 
-	unitRule UsePeopleToWater
+	buildingRule UsePeopleToWater
 		rate 5
 
 		local People greater 1
@@ -54,11 +54,11 @@ rules
 
 end
 
-units
+buildings
 
-	unit Home color 0xFF00FF mapRadius 1 rules [ SendPeopleToWork ] targets [ Home ] caps [ People 4 ] resources [ People 4 ]
+	building Home color 0xFF00FF mapRadius 1 rules [ SendPeopleToWork ] targets [ Home ] caps [ People 4 ] resources [ People 4 ]
 
-	unit Work color 0x00AAFF mapRadius 3 rules [ SendPeopleToHome UsePeopleToWater ] targets [ Work ] caps [ People 2 ] resources [ ]
+	building Work color 0x00AAFF mapRadius 3 rules [ SendPeopleToHome UsePeopleToWater ] targets [ Work ] caps [ People 2 ] resources [ ]
 
 end
 
