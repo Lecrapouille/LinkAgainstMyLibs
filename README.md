@@ -26,14 +26,17 @@ make -j8
 ./build/ExtendedForth
 ```
 
-## libOpenGLCppWrapper
+## Compages (OpenGLCppWrapper)
 
-https://github.com/Lecrapouille/OpenGLCppWrapper
+https://github.com/Lecrapouille/Compages
+
+Install Compages, then:
 
 ```sh
 cd OpenGL
 make -j8
-./build/OpenGL
+./build/Triangle
+./build/HeadlessCompute
 ```
 
 ## liblogger

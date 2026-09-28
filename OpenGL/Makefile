@@ -4,15 +4,12 @@ M=$(P)/.makefile
 PROJECT_NAME := LinkMyLibraries
 PROJECT_VERSION := 1.0.0
 TARGET_NAME := OpenGL
-TARGET_DESCRIPTION := Link My OpenGL Library
+TARGET_DESCRIPTION := Compages link examples (triangle + headless compute)
 COMPILATION_MODE := release
-CXX_STANDARD := --std=c++14
 
 include $(M)/project/Makefile
 
-SRC_FILES += src/BasicWindow.cpp src/main.cpp
-PKG_LIBS += openglcppwrapper
-VPATH += src
-INCLUDES += src
+ORCHESTRATOR_MODE := 1
+DIRS_WITH_MAKEFILE := Triangle HeadlessCompute
 
 include $(M)/rules/Makefile
