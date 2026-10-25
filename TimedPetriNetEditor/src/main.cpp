@@ -11,8 +11,10 @@ int main()
     assert(net.places().empty());
     assert(net.transitions().empty());
 
-    tpne::Place& p0 = net.addPlace(3.5f, 4.0f, 1u);
-    tpne::Transition& t0 = net.addTransition(3.14f, 2.16f);
+    tpne::Place& p0 = net.addPlace(1u);
+    net.position(p0) = { 3.5f, 4.0f };
+    tpne::Transition& t0 = net.addTransition();
+    net.position(t0) = { 3.14f, 2.16f };
     net.addArc(p0, t0);
 
     assert(net.places().size() == 1u);
