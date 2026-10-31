@@ -1,17 +1,17 @@
-P=..
-M=$(P)/.makefile
+# Links against the library SimForth, installed on the system and found by
+# pkg-config. The build goes to ../build/<configuration>/bin.
 
 PROJECT_NAME := LinkMyLibraries
 PROJECT_VERSION := 1.0.0
-TARGET_NAME := Forth
-TARGET_DESCRIPTION := Link My Forth library
-COMPILATION_MODE := release
+COMPILATION_MODE ?= release
+CXX_STANDARD := c++14
+BUILD_DIR := ../build
 
-include $(M)/project/Makefile
+TARGETS := Forth
+Forth.DESCRIPTION := Link My Forth library
+Forth.SOURCES := src/main.cpp
+Forth.INCLUDES := src
+Forth.PKG_CONFIG := simforth
 
-SRC_FILES += src/main.cpp
-PKG_LIBS += simforth
-VPATH += src
-INCLUDES += src
-
-include $(M)/rules/Makefile
+M ?= ../.makefile
+include $(M)/MyMakefile.mk

@@ -1,18 +1,17 @@
-P=..
-M=$(P)/.makefile
+# Links against the library zipper, installed on the system and found by
+# pkg-config. The build goes to ../build/<configuration>/bin.
 
 PROJECT_NAME := LinkMyLibraries
 PROJECT_VERSION := 1.0.0
-TARGET_NAME := Zipper
-TARGET_DESCRIPTION := Link Zipper Library
-COMPILATION_MODE := release
-CXX_STANDARD := --std=c++20
+COMPILATION_MODE ?= release
+CXX_STANDARD := c++20
+BUILD_DIR := ../build
 
-include $(M)/project/Makefile
+TARGETS := Zipper
+Zipper.DESCRIPTION := Link Zipper Library
+Zipper.SOURCES := src/main.cpp
+Zipper.INCLUDES := src
+Zipper.PKG_CONFIG := zipper
 
-SRC_FILES += src/main.cpp
-PKG_LIBS += zipper
-VPATH += src
-INCLUDES += src
-
-include $(M)/rules/Makefile
+M ?= ../.makefile
+include $(M)/MyMakefile.mk

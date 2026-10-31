@@ -1,23 +1,20 @@
-P=..
-M=$(P)/.makefile
+# Links against the library OpenGlassBox, installed on the system and found by
+# pkg-config. The build goes to ../build/<configuration>/bin.
 
 PROJECT_NAME := LinkMyLibraries
 PROJECT_VERSION := 1.0.0
-TARGET_NAME := OpenGlassBox
-TARGET_DESCRIPTION := Link OpenGlassBox Library
-COMPILATION_MODE := release
+COMPILATION_MODE ?= release
+CXX_STANDARD := c++17
+PKG_CONFIG_STATIC := 1
+BUILD_DIR := ../build
 
-include $(M)/project/Makefile
+TARGETS := OpenGlassBox
+OpenGlassBox.DESCRIPTION := Link OpenGlassBox Library
+OpenGlassBox.SOURCES := src/main.cpp
+OpenGlassBox.INCLUDES := src
+OpenGlassBox.PKG_CONFIG := OpenGlassBox
+OpenGlassBox.DEFINES := VIRTUAL=
+OpenGlassBox.CXXFLAGS := -Wno-unused-variable
 
-# The public headers use std::optional.
-CXX_STANDARD := --std=c++17
-
-SRC_FILES += src/main.cpp
-PKG_LIBS += --static OpenGlassBox
-VPATH += src
-INCLUDES += src
-
-DEFINES += -Wno-unused-variable
-DEFINES += -DVIRTUAL=
-
-include $(M)/rules/Makefile
+M ?= ../.makefile
+include $(M)/MyMakefile.mk

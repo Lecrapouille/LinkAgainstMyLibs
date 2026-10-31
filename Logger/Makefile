@@ -1,17 +1,16 @@
-P=..
-M=$(P)/.makefile
+# Links against the library MyLogger, installed on the system and found by
+# pkg-config. The build goes to ../build/<configuration>/bin.
 
 PROJECT_NAME := LinkMyLibraries
 PROJECT_VERSION := 1.0.0
-TARGET_NAME := Logger
-TARGET_DESCRIPTION := Link My Logger Library
-COMPILATION_MODE := release
+COMPILATION_MODE ?= release
+BUILD_DIR := ../build
 
-include $(M)/project/Makefile
+TARGETS := Logger
+Logger.DESCRIPTION := Link My Logger Library
+Logger.SOURCES := src/main.cpp
+Logger.INCLUDES := src
+Logger.PKG_CONFIG := mylogger
 
-SRC_FILES += src/main.cpp
-PKG_LIBS += mylogger
-VPATH += src
-INCLUDES += src
-
-include $(M)/rules/Makefile
+M ?= ../.makefile
+include $(M)/MyMakefile.mk

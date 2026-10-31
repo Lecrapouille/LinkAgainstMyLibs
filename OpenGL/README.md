@@ -18,9 +18,9 @@ Then:
 
 ```sh
 cd OpenGL
-make -j8
-./build/Triangle
-./build/HeadlessCompute
+make
+make run-Triangle
+make run-HeadlessCompute
 ```
 
 Examples:
